@@ -1,3 +1,5 @@
+pub mod config;
+
 use std::{
     fs,
     io::{prelude::*, BufReader},
@@ -49,8 +51,7 @@ fn handle_connection(mut connection_stream: TcpStream){
         let contents = fs::read_to_string(filename).unwrap();
         let length = contents.len();
 
-        let response =
-            format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+        let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
 
         connection_stream.write_all(response.as_bytes()).unwrap();                                                                                                                            
 }
