@@ -34,7 +34,7 @@ pub fn create_config() -> Result<(), ParseError>{
     let path_url_byte_size  = std::io::stdin().read_line(&mut path_url).unwrap();
     
     let full_addr = format!("{}{}",address,port);
-    let tcp = match full_addr.trim().parse::<String>(){
+    let _tcp = match full_addr.trim().parse::<String>(){
         Ok(tcp) => tcp,
         Err(e) => return Err(e)
     };
