@@ -2,6 +2,18 @@
 name = "web_serve"
 version = "0.1.0"
 edition = "2021"
+authors = ["Kisura WSP"]
+description = "A CLI Web-Server Application which hosts HTML Pages and stores your configurations for future use"
+readme = "README.md"
+homepage = "https://github.com/KisuraWSP/webServe"
+repository = "https://github.com/KisuraWSP/webServe"
+keywords = ["cli","tcp-server","utility"]
+catergories = ["command-line-utilities"]
+
 
 [dependencies]
 ansi_term = "0.12.1"
+
+[[bin]]
+name = "web_serve"
+path = "src/webserve.rs"

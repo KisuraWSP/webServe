@@ -1,0 +1,56 @@
+[config_name:Test1
+,bytes_read: 7]
+[port: 3000
+,bytes_read: 6]
+[url: C:/Desktop
+,bytes_read: 12]
+[Full_address: 127.0.0.1:3000
+]
+[config_name:Test2
+,bytes_read: 7]
+[port: 3420
+,bytes_read: 6]
+[url: C:/OneDrive
+,bytes_read: 13]
+[Full_address: 127.0.0.1:3420
+]
+[config_name:Test Config
+,bytes_read: 13]
+[port: 3000
+,bytes_read: 6]
+[url: C:/Desktop/Server/Runtime
+,bytes_read: 27]
+[Full_address: 127.0.0.1:3000
+]
+[config_name:Hallo
+,bytes_read: 7]
+[port: 6969
+,bytes_read: 6]
+[url: C:/Desktop/Server/Runtime/Struct/Alloc
+,bytes_read: 40]
+[Full_address: 127.0.0.1:6969
+]
+[config_name:test_html
+,bytes_read: 11]
+[port: 6969
+,bytes_read: 6]
+[url: C:/Test/test.html
+,bytes_read: 19]
+[Full_address: 127.0.0.1:6969
+]
+[config_name:test3
+,bytes_read: 7]
+[port: 3456
+,bytes_read: 6]
+[url: C:/test/test.html
+,bytes_read: 19]
+[Full_address: 127.0.0.1:3456
+]
+[config_name:Test_Hello
+,bytes_read: 12]
+[port: 4545
+,bytes_read: 6]
+[url: C:/Test/hello.htm;
+,bytes_read: 20]
+[Full_address: 127.0.0.1:4545
+]
