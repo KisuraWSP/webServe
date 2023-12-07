@@ -26,6 +26,7 @@ fn help(){
 }
 
 fn app() {
+    let _enabled = ansi_term::enable_ansi_support();
     let layer1 = "\t\t\t\t-------------------------------------------------------------------------------";
     let layer2 = "\t\t\t\t\\              / |----- |----|   |-------- |----- |------ \\      /  |------    ";
     let layer3 = "\t\t\t\t \\            /  |      |     |  |         |      |     |  \\    /   |          ";
@@ -96,12 +97,15 @@ pub fn main(){
         }
         else if command == "--create_config"{
 			println!("{}","creating new configuration");
+            
         }
         else if command == "--load_config"{
             println!("{}","loading configuration options");
+            
         }
         else if command == "--default_config"{
             println!("{}","loading default configuration");
+            
         }
         else if command == "--exit"{
             println!("{}","exitting program");
