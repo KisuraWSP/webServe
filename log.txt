@@ -54,3 +54,11 @@
 ,bytes_read: 20]
 [Full_address: 127.0.0.1:4545
 ]
+[config_name:Struct_Testing
+,bytes_read: 16]
+[port: 3469
+,bytes_read: 6]
+[url: C:/Defer/Struct
+,bytes_read: 17]
+[Full_address: 127.0.0.1:3469
+]
