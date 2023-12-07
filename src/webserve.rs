@@ -1,4 +1,5 @@
-mod config;
+pub mod config;
+pub mod tcp_server;
 
 use ansi_term::{
     Colour::*,
@@ -13,17 +14,19 @@ use config::{
 
 use std::env;
 
-
-fn help(){
-    println!("LIST OF FLAGS");
-    println!("--help\tDisplays List of Commands");
-    println!("--hallo <Secondary Arguments...>\tDisplays a Message to the User");
-    println!("--create_config\tCreates a new Network Configuration for the Server");
-    println!("--app\tLoads the WebServe Application");
-    println!("--load_config\tLoads an existing Configuration for the Server");
-    println!("--default_config\tLoads the predefined Network Configuration for the Server");
-    println!("--exit\tExits the Application");
+macro_rules! help {
+    () => {
+        println!("LIST OF FLAGS");
+        println!("--help\tDisplays List of Commands");
+        println!("--hallo <Secondary Arguments...>\tDisplays a Message to the User");
+        println!("--create_config\tCreates a new Network Configuration for the Server");
+        println!("--app\tLoads the WebServe Application");
+        println!("--load_config\tLoads an existing Configuration for the Server");
+        println!("--default_config\tLoads the predefined Network Configuration for the Server");
+        println!("--exit\tExits the Application");
+    };
 }
+
 
 fn app() {
     let _enabled = ansi_term::enable_ansi_support();
@@ -90,7 +93,7 @@ pub fn main(){
             println!("Hallo! {:?}",  &args[2..]);
         } 
         else if command == "--help"{
-            help();
+            help!();
         }
         else if command == "--app"{
             app();

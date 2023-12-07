@@ -15,5 +15,5 @@ catergories = ["command-line-utilities"]
 ansi_term = "0.12.1"
 
 [[bin]]
-name = "web_serve"
+name = "webserve"
 path = "src/webserve.rs"
