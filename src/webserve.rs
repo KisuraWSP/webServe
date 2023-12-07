@@ -14,6 +14,7 @@ use config::{
 
 use std::env;
 
+
 macro_rules! help {
     () => {
         println!("LIST OF FLAGS");
@@ -24,7 +25,8 @@ macro_rules! help {
         println!("--app\tLoads the WebServe GUI Application\t<- Coming Soon...");
         println!("--load_config\tLoads an existing Configuration for the Server");
         println!("--default_config\tLoads the predefined Network Configuration for the Server");
-        println!("--test\tUsed to test your Command-Line Arguments\t<- Coming Soon(To run the tests that are in the program)");
+        println!("--test\tUsed to test your Command-Line Arguments");
+        println!("--run-tests\t<- Coming Soon(To run the tests that are in the program)");
         println!("--exit\tExits the Application");
     };
 }
@@ -89,6 +91,11 @@ pub fn main(){
             println!("Test!");
             for arg in &args{
                 println!("{}",arg);
+            }
+        }
+        else if command == "--run-tests"{
+            if cfg!(tests){
+                // to do later
             }
         }
         else if command == "--hallo"{
