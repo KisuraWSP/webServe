@@ -20,9 +20,11 @@ macro_rules! help {
         println!("--help\tDisplays List of Commands");
         println!("--hallo <Secondary Arguments...>\tDisplays a Message to the User");
         println!("--create_config\tCreates a new Network Configuration for the Server");
-        println!("--app\tLoads the WebServe Application");
+        println!("--run\tLoads the WebServe CLI Application");
+        println!("--app\tLoads the WebServe GUI Application\t<- Coming Soon...");
         println!("--load_config\tLoads an existing Configuration for the Server");
         println!("--default_config\tLoads the predefined Network Configuration for the Server");
+        println!("--test\tUsed to test your Command-Line Arguments\t<- Coming Soon(To run the tests that are in the program)");
         println!("--exit\tExits the Application");
     };
 }
