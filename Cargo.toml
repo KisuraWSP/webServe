@@ -3,7 +3,7 @@ name = "web_serve"
 version = "0.1.0"
 edition = "2021"
 authors = ["Kisura WSP"]
-description = "A CLI Web-Server Application which hosts HTML Pages and stores your configurations for future use"
+description = "A CLI Web-Server Application which hosts HTML Pages and stores your configurations"
 readme = "README.md"
 homepage = "https://github.com/KisuraWSP/webServe"
 repository = "https://github.com/KisuraWSP/webServe"
@@ -13,6 +13,7 @@ catergories = ["command-line-utilities"]
 
 [dependencies]
 ansi_term = "0.12.1"
+druid = "0.8.3"
 
 [[bin]]
 name = "webserve"

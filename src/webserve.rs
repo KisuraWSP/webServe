@@ -95,8 +95,11 @@ pub fn main(){
         else if command == "--help"{
             help!();
         }
-        else if command == "--app"{
+        else if command == "--run"{
             app();
+        }
+        else if commad == "--app"{
+            // loads the webserve gui interface
         }
         else if command == "--create_config"{
 			println!("{}","creating new configuration");
