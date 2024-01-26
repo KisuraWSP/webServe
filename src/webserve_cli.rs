@@ -58,16 +58,17 @@ macro_rules! args{
 
 macro_rules! help {
     () => {
-        println!("webserve --<argument>\n");
+        println!("WebServe v0.1.0");
+        println!("\t\t\twebserve --<argument>\n");
 
         println!("List Of Arguments");
-        println!("hallo <arg1, arg2, ..., argN>\tDisplays a Message to the User");
-        println!("create_config\t\t\tCreates a new Network Configuration for the Server");
-        println!("run\t\t\t\tLoads the WebServe CLI Application");
-        println!("load_config\t\t\tLoads an existing Configuration for the Server");
-        println!("default_config\t\t\tLoads the predefined Network Configuration for the Server");
-        println!("test\t\t\t\tUsed to test your Command-Line Arguments");
-        println!("exit\t\t\t\tExits the Application");
+        println!("\thallo <arg1, arg2, ..., argN>\tDisplays a Message to the User");
+        println!("\tcreate_config\t\t\tCreates a new Network Configuration for the Server");
+        println!("\trun\t\t\t\tLoads the WebServe CLI Application");
+        println!("\tload_config\t\t\tLoads an existing Configuration for the Server");
+        println!("\tdefault_config\t\t\tLoads the predefined Network Configuration for the Server");
+        println!("\ttest\t\t\t\tUsed to test your Command-Line Arguments");
+        println!("\texit\t\t\t\tExits the Application");
     };
 }
 
