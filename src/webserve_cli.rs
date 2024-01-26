@@ -22,7 +22,7 @@ macro_rules! args{
                 }
             }
             else if command == "--hallo"{
-                println!("Hallo! {:?}",  &args[2..]);
+                println!("Hallo {:?}!",  &args[2..]);
             } 
             else if command == "--help"{
                 help!();
@@ -51,21 +51,23 @@ macro_rules! args{
             else{
                 eprintln!("Command {command} doesnt exist!");
             }
-            println!("Your argument {}", command);
+            //println!("Your argument {}", command);
         }
     }};
 }
 
 macro_rules! help {
     () => {
-        println!("LIST OF FLAGS");
-        println!("--hallo <Secondary Arguments...>\tDisplays a Message to the User");
-        println!("--create_config\tCreates a new Network Configuration for the Server");
-        println!("--run\tLoads the WebServe CLI Application");
-        println!("--load_config\tLoads an existing Configuration for the Server");
-        println!("--default_config\tLoads the predefined Network Configuration for the Server");
-        println!("--test\tUsed to test your Command-Line Arguments");
-        println!("--exit\tExits the Application");
+        println!("webserve --<argument>\n");
+
+        println!("List Of Arguments");
+        println!("hallo <arg1, arg2, ..., argN>\tDisplays a Message to the User");
+        println!("create_config\t\t\tCreates a new Network Configuration for the Server");
+        println!("run\t\t\t\tLoads the WebServe CLI Application");
+        println!("load_config\t\t\tLoads an existing Configuration for the Server");
+        println!("default_config\t\t\tLoads the predefined Network Configuration for the Server");
+        println!("test\t\t\t\tUsed to test your Command-Line Arguments");
+        println!("exit\t\t\t\tExits the Application");
     };
 }
 
@@ -100,6 +102,7 @@ fn app() {
         1=> {
             let default_msg = Green.paint("Loading the Default Configuration...").to_string();
             println!("{}",default_msg);
+            println!("{}","View your page at -> 127.0.0.1:3000");
             default_config();
         } ,
         2=> {

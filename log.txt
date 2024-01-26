@@ -62,3 +62,11 @@
 ,bytes_read: 17]
 [Full_address: 127.0.0.1:3469
 ]
+[config_name:TestConfig
+,bytes_read: 12]
+[port: 6969
+,bytes_read: 6]
+[url: C:/Test
+,bytes_read: 9]
+[Full_address: 127.0.0.1:6969
+]
