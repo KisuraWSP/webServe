@@ -13,7 +13,6 @@ catergories = ["command-line-utilities"]
 
 [dependencies]
 ansi_term = "0.12.1"
-druid = "0.8.3"
 
 [[bin]]
 name = "webserve"
