@@ -103,7 +103,7 @@ fn app() {
         1=> {
             let default_msg = Green.paint("Loading the Default Configuration...").to_string();
             println!("{}",default_msg);
-            println!("{}","View your page at -> 127.0.0.1:3000");
+            println!("{}","View your page at -> http://localhost:3000/");
             default_config();
         } ,
         2=> {

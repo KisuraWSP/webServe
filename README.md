@@ -5,3 +5,7 @@ This application will let you create a webserver on localhost and will allow you
 
 ### REFERENCES
 [TCP Server implementation](https://doc.rust-lang.org/book/ch20-01-single-threaded.html)
+
+# Demo
+- Note: [This is a Work In progress Build]
+![WebServe](webserve_demo.gif)
