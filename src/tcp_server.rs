@@ -1,3 +1,6 @@
+// Added path and PathBuf for file system routing
+use std::path::{Path, PathBuf};
+
 // "implement tcp server" that can be used anywhere when user runs executable
 // run tcp related functions in a simplified macro for easy reuse
 
@@ -75,28 +78,44 @@ macro_rules! tcp_serve_default {
 // NEW MACRO for custom configs
 #[macro_export]
 macro_rules! tcp_serve_custom {
-    ($host:expr, $port:expr, $file_path:expr) => {{
+    // UPDATED signature to accept a main file and a web root directory
+    ($host:expr, $port:expr, $main_file:expr, $web_root:expr) => {{
         let addr = format!("{}:{}", $host, $port);
         
-        // --- FIX #2 ---
-        // Replace the match block with .expect().
-        // If binding fails, the program will panic and exit,
-        // which solves the incompatible return type error.
         let tcp_listener = TcpListener::bind(&addr)
             .expect(&format!("Failed to bind to address {}", addr));
 
         let pool = ThreadPool::new(4);
         println!("Server listening on http://{}", addr);
 
+        // --- NEW ---
+        // Get the absolute, "canonicalized" path for security checks
+        let root_path_buf = $web_root.to_path_buf();
+        let web_root_abs = match root_path_buf.canonicalize() {
+            Ok(path) => path,
+            Err(e) => {
+                eprintln!("Failed to find web root directory {:?}: {}", root_path_buf, e);
+                panic!("Web root not found.");
+            }
+        };
+        // Also canonicalize the main file path
+        let main_file_abs = match $main_file.to_path_buf().canonicalize() {
+             Ok(path) => path,
+             Err(e) => {
+                eprintln!("Failed to find main file {:?}: {}", $main_file, e);
+                panic!("Main file not found.");
+            }
+        };
+        // --- END NEW ---
+
         for stream in tcp_listener.incoming() {
             match stream {
                 Ok(_stream) => {
-                    // Clone the file path so it can be moved into the thread
-                    let file_path_clone = $file_path.to_string();
+                    // Clone the paths to move into the thread
+                    let main_file_clone = main_file_abs.clone();
+                    let web_root_clone = web_root_abs.clone();
 
                     pool.execute(move || {
-                        println!("Connection established on custom config!");
-
                         let connection_handler = |mut connection_stream: TcpStream| {
                             let buffered_reader = BufReader::new(&mut connection_stream);
                             
@@ -107,31 +126,86 @@ macro_rules! tcp_serve_custom {
                                     return;
                                 }
                             };
-                            
-                            // --- FIX #1 ---
-                            // Both arms of the if/else must return the same type.
-                            // We make both return a String.
-                            let (status_line, filename) = if http_request_line == "GET / HTTP/1.1" {
-                                ("HTTP/1.1 200 OK", file_path_clone) // This is a String
-                            } else {
-                                ("HTTP/1.1 404 NOT FOUND", "404.html".to_string()) // This is now also a String
-                            };
 
-                            // fs::read_to_string takes AsRef<Path>, so we pass &filename
-                            let contents = match fs::read_to_string(&filename) {
-                                Ok(content) => content,
+                            // --- NEW ROUTING LOGIC ---
+                            // Get the requested path (e.g., "/", "/style.css", "/about")
+                            let request_path = http_request_line
+                                .split(" ")
+                                .nth(1)
+                                .unwrap_or("/");
+
+                            // Determine which file to serve
+                            let (status_line, file_to_read) = 
+                                if request_path == "/" {
+                                    // Request for root, serve main HTML file
+                                    ("HTTP/1.1 200 OK", main_file_clone)
+                                } else {
+                                    // Request for another file (e.g., /style.css)
+                                    // Clean the path to remove leading '/'
+                                    let clean_path = request_path.strip_prefix("/").unwrap_or(request_path);
+                                    let requested_file_path = web_root_clone.join(clean_path);
+
+                                    // --- SECURITY CHECK & ROUTING ---
+                                    match requested_file_path.canonicalize() {
+                                        Ok(canonical_file_path) => {
+                                            // Ensure the path is still INSIDE the web root
+                                            if !canonical_file_path.starts_with(&web_root_clone) {
+                                                // Directory traversal attempt!
+                                                ("HTTP/1.1 403 FORBIDDEN", PathBuf::from("404.html"))
+                                            } else {
+                                                // File is safe and exists, serve it
+                                                ("HTTP/1.1 200 OK", canonical_file_path)
+                                            }
+                                        }
+                                        Err(_) => {
+                                            // File not found OR path is bad
+                                            // Serve main file to allow client-side routing
+                                            ("HTTP/1.1 200 OK", main_file_clone)
+                                        }
+                                    }
+                                };
+                            
+                            // --- NEW MIME TYPE and BINARY READ ---
+
+                            // Get file extension for MIME type
+                            let extension = file_to_read.extension().and_then(|s| s.to_str()).unwrap_or("");
+                            let content_type = match extension {
+                                "html" => "text/html",
+                                "css" => "text/css",
+                                "js" => "application/javascript",
+                                "png" => "image/png",
+                                "jpg" | "jpeg" => "image/jpeg",
+                                "gif" => "image/gif",
+                                // Add more types as needed
+                                _ => "application/octet-stream", // Default binary type
+                            };
+                            
+                            // Read file as raw BYTES, not string
+                            let (final_status, contents) = match fs::read(&file_to_read) {
+                                Ok(content) => (status_line.to_string(), content),
                                 Err(_) => {
-                                    println!("Could not read file: {}", filename);
-                                    // Always try to read 404.html as a fallback
-                                    fs::read_to_string("404.html")
-                                        .unwrap_or_else(|_| "<h1>404 Not Found</h1><p>Additionally, the 404.html file is missing.</p>".to_string())
+                                    // Primary file failed, try 404.html
+                                    match fs::read("404.html") {
+                                        Ok(content_404) => ("HTTP/1.1 404 NOT FOUND".to_string(), content_404),
+                                        Err(_) => (
+                                            // Hardcoded fallback if 404.html is also missing
+                                            "HTTP/1.1 404 NOT FOUND".to_string(), 
+                                            "<h1>404 Not Found</h1><p>And 404.html is missing.</p>".as_bytes().to_vec()
+                                        )
+                                    }
                                 }
                             };
 
                             let length = contents.len();
-                            let response = format!("{status_line}\r\nContent-Length: {length}\r\n\r\n{contents}");
+                            // Build the response headers
+                            let response_headers = format!(
+                                "{}\r\nContent-Length: {}\r\nContent-Type: {}\r\n\r\n",
+                                final_status, length, content_type
+                            );
                             
-                            connection_stream.write_all(response.as_bytes()).unwrap_or_else(|e| println!("Failed to write response: {}", e));
+                            // Write headers first, then binary content
+                            connection_stream.write_all(response_headers.as_bytes()).unwrap_or_else(|e| println!("Failed to write headers: {}", e));
+                            connection_stream.write_all(&contents).unwrap_or_else(|e| println!("Failed to write content: {}", e));
                             connection_stream.flush().unwrap_or_else(|e| println!("Failed to flush stream: {}", e));
                         };
 

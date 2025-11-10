@@ -4,6 +4,7 @@ use std::{
     net::{TcpListener,TcpStream},
     io::{prelude::*, BufReader,Write},
     string::ParseError,
+    path::PathBuf, // <-- ADDED for path logic
 };
 // Import BOTH macros
 use crate::{tcp_serve_default, tcp_serve_custom};
@@ -65,19 +66,25 @@ pub fn create_config() -> Result<(), ParseError>{
     };
     save_config();
 
-    // *** ADDED THIS PART ***
-    // Run Created Config immediately
+    // --- MODIFIED THIS PART ---
+    // We determine the "web root" (the parent directory)
+    let main_file_path = PathBuf::from(&config.config_url);
+    let web_root_path = main_file_path.parent().unwrap_or_else(|| std::path::Path::new(".")).to_path_buf();
+
     println!("Launching new server on http://{}:{}/", address, config.config_port);
-    tcp_serve_custom!(address, config.config_port, &config.config_url);
+    println!("Serving file: {:?}", main_file_path);
+    println!("From web root: {:?}", web_root_path);
+
+    // Call the NEW macro with the main file AND the web root
+    // --- FIX: Pass references (&) to the PathBuf variables ---
+    tcp_serve_custom!(address, config.config_port, &main_file_path, &web_root_path);
 
     Ok(())
 }
     
 pub fn load_config(){
-    // *** IMPLEMENTED THIS FUNCTION ***
     let mut configs: Vec<Config> = Vec::new();
 
-    // 1. Read the config.txt file
     let file_content = match fs::read_to_string("config.txt") {
         Ok(content) => content,
         Err(_) => {
@@ -86,7 +93,6 @@ pub fn load_config(){
         }
     };
 
-    // 2. Parse the file line by line
     for line in file_content.lines() {
         if line.trim().is_empty() { continue; } // Skip empty lines
 
@@ -127,10 +133,19 @@ pub fn load_config(){
         Ok(choice) if choice > 0 && choice <= configs.len() => {
             let selected_config = &configs[choice - 1]; // Adjust for 0-based index
             
-            // 5. Launch the selected server
+            // --- MODIFIED THIS PART ---
+            // Determine web root from the loaded config path
+            let main_file_path = PathBuf::from(&selected_config.config_url);
+            let web_root_path = main_file_path.parent().unwrap_or_else(|| std::path::Path::new(".")).to_path_buf();
+            
             println!("Loading config: {}", selected_config.config_name);
             println!("View your page at -> http://127.0.0.1:{}/", selected_config.config_port);
-            tcp_serve_custom!("127.0.0.1", selected_config.config_port, &selected_config.config_url);
+            println!("Serving file: {:?}", main_file_path);
+            println!("From web root: {:?}", web_root_path);
+
+            // Call the NEW macro with the main file AND the web root
+            // --- FIX: Pass references (&) to the PathBuf variables ---
+            tcp_serve_custom!("127.0.0.1", selected_config.config_port, &main_file_path, &web_root_path);
         }
         _ => {
             println!("Invalid selection. Please enter a number from 1 to {}.", configs.len());
@@ -139,11 +154,7 @@ pub fn load_config(){
 }    
     
 pub fn default_config(){
-    // load the default configuration
-    // set by the program
-    // port 3000
-    // serves the hello.html page and 404.html page for errorinous condition
-    // Multithreading for tcp connection is required 
-    // Indefinate Connection 
+    // --- THIS IS UNCHANGED ---
+    // It correctly calls the simple, original macro.
     tcp_serve_default!("127.0.0.1",3000);
 }
