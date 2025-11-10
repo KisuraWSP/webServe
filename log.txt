@@ -78,3 +78,7 @@
 ,bytes_read: 16]
 [Full_address: 127.0.0.1:9999
 ]
+[config_name:PaleoVision,bytes_read: 13]
+[port: 6969,bytes_read: 6]
+[url: D:/website_research/index.html,bytes_read: 32]
+[Full_address: 127.0.0.1:6969]

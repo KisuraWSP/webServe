@@ -13,6 +13,7 @@ catergories = ["command-line-utilities"]
 
 [dependencies]
 ansi_term = "0.12.1"
+threadpool = "1.8.1" 
 
 [[bin]]
 name = "webserve"
